@@ -1,0 +1,13 @@
+{
+  "name": "claude-metrics",
+  "version": "0.1.0",
+  "description": "Claude Metrics plugin",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "node --test 'tests/*.test.mjs'"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
