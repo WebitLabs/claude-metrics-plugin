@@ -1,0 +1,16 @@
+{
+  "name": "claude-metrics",
+  "owner": {
+    "name": "WebitLabs",
+    "url": "https://github.com/WebitLabs"
+  },
+  "plugins": [
+    {
+      "name": "claude-metrics",
+      "source": "./",
+      "description": "Posts UserPromptSubmit + Stop + 10-min health-check events to the Claude Metrics ingest API.",
+      "version": "0.1.0",
+      "category": "metrics"
+    }
+  ]
+}
