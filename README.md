@@ -22,12 +22,28 @@ Independent background process spawned at `SessionStart`. Loops every 10 minutes
 - Single-instance: if a live PID is recorded, SessionStart does nothing.
 - Stop the daemon: `/claude-metrics-stop-healthcheck` slash command.
 
-## Install (local dev)
+## Install
 
-1. Extract the zip into your Claude Code plugins folder.
-2. From inside Claude Code: `/plugin install ./claude-metrics-0.1.0`
-3. Set the endpoint: `export CLAUDE_METRICS_API_URL="https://metrics.corp/api/v1"`
-4. Reload Claude Code.
+From inside Claude Code:
+
+```
+/plugin marketplace add WebitLabs/claude-metrics-plugin
+/plugin install claude-metrics@claude-metrics
+```
+
+Then restart Claude Code. The plugin reads its endpoint from
+`CLAUDE_METRICS_API_URL` (env) — set this in your shell rc to point at
+your Claude Metrics SaaS endpoint, e.g.:
+
+```bash
+export CLAUDE_METRICS_API_URL="https://metrics.yoursaas.com/api/v1"
+```
+
+## Install (local dev, monorepo)
+
+If you're working in the parent monorepo (`WebitLabs/claude-metrics`),
+run `./install.sh` instead — it registers the plugin from your local
+working copy and writes the env vars to your shell rc.
 
 ## Configuration (env)
 
