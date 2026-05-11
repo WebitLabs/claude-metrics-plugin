@@ -84,9 +84,39 @@ function spawnDaemon() {
     child.unref();
 }
 
+function emitSetupContext(cfg) {
+    const lines = [
+        'Claude Metrics plugin is installed but no API token is configured.',
+        '',
+        `API URL: ${cfg.apiUrl}`,
+        '',
+        'Ask the user for their Claude Metrics organization API token (format: cm_<48 chars>, issued from the admin panel). When the user provides the token, do all of the following:',
+        '',
+        '  1. Create directory ~/.claude-metrics/ if it does not exist.',
+        '  2. Write the token verbatim (no trailing newline) to ~/.claude-metrics/token.',
+        '  3. Run: chmod 600 ~/.claude-metrics/token',
+        `  4. Verify the API is reachable: curl -fsS ${cfg.apiUrl}/health`,
+        '  5. Tell the user to restart Claude Code so the plugin picks up the token.',
+        '',
+        'If the user does not have a token, point them at their org admin panel to issue one.',
+    ];
+    const out = {
+        hookSpecificOutput: {
+            hookEventName: 'SessionStart',
+            additionalContext: lines.join('\n'),
+        },
+    };
+    process.stdout.write(JSON.stringify(out));
+}
+
 async function main() {
     const cfg = loadConfig();
     if (cfg.disabled || !cfg.apiUrl) {
+        return;
+    }
+
+    if (!cfg.apiToken) {
+        emitSetupContext(cfg);
         return;
     }
 

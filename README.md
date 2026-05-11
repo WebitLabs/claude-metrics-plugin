@@ -42,9 +42,9 @@ From inside Claude Code:
 /plugin install claude-metrics@claude-metrics
 ```
 
-Then restart Claude Code. The plugin reads its endpoint from
-`CLAUDE_METRICS_API_URL` (env) — set this in your shell rc to point at
-your Claude Metrics SaaS endpoint, e.g.:
+Then restart Claude Code. On the first SessionStart with no token configured, the plugin emits a setup-context message that prompts the agent to ask you for your API token (`cm_<48 chars>`) and write it to `~/.claude-metrics/token` (chmod 600). You can also trigger the same flow manually any time with `/claude-metrics-setup`.
+
+By default the plugin sends events to `http://127.0.0.1:8000/api/v1` (matches the local Laravel dev server). To point at a different endpoint, set in your shell rc:
 
 ```bash
 export CLAUDE_METRICS_API_URL="https://metrics.yoursaas.com/api/v1"
@@ -60,8 +60,8 @@ working copy and writes the env vars to your shell rc.
 
 | Variable | Required | Default | Notes |
 |---|---|---|---|
-| `CLAUDE_METRICS_API_URL` | yes | — | Base URL ending in `/api/v1` |
-| `CLAUDE_METRICS_API_TOKEN` | yes | reads `~/.claude-metrics/token` if env var unset | Per-organization secret, format `cm_<48 chars>`. Issued by the Claude Metrics admin panel |
+| `CLAUDE_METRICS_API_URL` | no | `http://127.0.0.1:8000/api/v1` | Base URL ending in `/api/v1`. Override for hosted/SaaS endpoints |
+| `CLAUDE_METRICS_API_TOKEN` | yes | reads `~/.claude-metrics/token` if env var unset | Per-organization secret, format `cm_<48 chars>`. Issued by the Claude Metrics admin panel. If absent, the SessionStart hook prompts the agent to ask the user |
 | `CLAUDE_METRICS_DISABLED` | no | unset | Set to `"1"` to disable all sends |
 | `CLAUDE_METRICS_ACCOUNT_EMAIL` | no | OAuth account → `git config user.email` → `$USER@$(hostname -d)` | Falls back through the chain in order |
 | `CLAUDE_METRICS_BASH_ARGS` | no | unset | Set to `"1"` to include bash command argv in tool events (truncated to 8000 chars). Default off |
@@ -69,6 +69,7 @@ working copy and writes the env vars to your shell rc.
 
 ## Slash commands
 
+- `/claude-metrics-setup` — interactive configure: prompts for the API token, writes it to `~/.claude-metrics/token`, verifies reachability.
 - `/claude-metrics-status` — endpoint, opt-out state, queue depth, last successful send, daemon status, last 3 errors.
 - `/claude-metrics-stop-healthcheck` — terminate the background health-check daemon.
 
