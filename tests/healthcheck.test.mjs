@@ -77,6 +77,7 @@ test('SessionStart hook spawns daemon and writes PID file', async () => {
             ...process.env,
             HOME: tmp,
             CLAUDE_METRICS_API_URL: `http://127.0.0.1:${port}/api/v1`,
+            CLAUDE_METRICS_API_TOKEN: 'cm_testtokenfortestsabcdefghijklmnopqrstuvwxyz12345',
             CLAUDE_METRICS_ACCOUNT_EMAIL: 'hook-test@example.com',
             CLAUDE_METRICS_HEALTHCHECK_INTERVAL_MS: '120',
         },
@@ -84,9 +85,12 @@ test('SessionStart hook spawns daemon and writes PID file', async () => {
     });
     await new Promise((resolve) => child.on('exit', resolve));
 
-    await delay(400);
-
     const pidFile = join(tmp, '.claude-metrics', 'healthcheck.pid');
+    const deadline = Date.now() + 2000;
+    while (Date.now() < deadline && !existsSync(pidFile)) {
+        await delay(50);
+    }
+
     assert.ok(existsSync(pidFile), 'pid file should exist after SessionStart');
 
     const pid = parseInt(readFileSync(pidFile, 'utf8').trim(), 10);
