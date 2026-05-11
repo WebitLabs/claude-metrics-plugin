@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { loadConfig } from '../lib/config.mjs';
 import { uuid, resolveSessionId, recallTurn } from '../lib/ids.mjs';
 import { sendEvent, flushQueue } from '../lib/client.mjs';
+import { clientMetaBase } from '../lib/client-meta.mjs';
 import { popPending } from '../lib/tool-stack.mjs';
 import {
     classifyBash,
@@ -107,11 +108,7 @@ async function main() {
         permission_outcome: permissionOutcome,
         hook_block_reason: hookBlockReason,
         permission_mode: permissionMode,
-        client_meta: {
-            os: cfg.os,
-            plugin_version: cfg.pluginVersion,
-            node_version: cfg.nodeVersion,
-        },
+        client_meta: { ...clientMetaBase() },
     };
 
     await sendEvent('events/tool', body).catch(() => {});

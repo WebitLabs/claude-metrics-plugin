@@ -3,6 +3,7 @@ import { readFileSync, existsSync, statSync } from 'node:fs';
 import { loadConfig } from '../lib/config.mjs';
 import { uuid, resolveSessionId, recallTurn } from '../lib/ids.mjs';
 import { sendEvent, flushQueue } from '../lib/client.mjs';
+import { clientMetaBase } from '../lib/client-meta.mjs';
 import { computeContextSnapshot } from '../lib/context.mjs';
 import { mutateState, readState } from '../lib/session-state.mjs';
 import { summariseTranscript } from '../lib/session-summary.mjs';
@@ -432,11 +433,7 @@ async function main() {
         thinking_blocks_count: parsed.thinkingBlocksCount,
         parallel_tools_max: parsed.parallelToolsMax,
         parallel_tools_avg: parsed.parallelToolsAvg,
-        client_meta: {
-            os: cfg.os,
-            plugin_version: cfg.pluginVersion,
-            node_version: cfg.nodeVersion,
-        },
+        client_meta: { ...clientMetaBase() },
     };
 
     await sendEvent('events/execution', body).catch(() => {});
@@ -471,11 +468,7 @@ async function main() {
         // (e.g., IdleVsActive) work even when SessionEnd never fires.
         ended_at: summary.endedAt || new Date().toISOString(),
         exit_kind: 'active',
-        client_meta: {
-            os: cfg.os,
-            plugin_version: cfg.pluginVersion,
-            node_version: cfg.nodeVersion,
-        },
+        client_meta: { ...clientMetaBase() },
     };
     await sendEvent('events/session', sessionBody).catch(() => {});
 

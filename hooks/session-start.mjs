@@ -11,6 +11,7 @@ import { homedir } from 'node:os';
 import { loadConfig, gitRepoUrl } from '../lib/config.mjs';
 import { resolveSessionId } from '../lib/ids.mjs';
 import { sendEvent, flushQueue } from '../lib/client.mjs';
+import { clientMetaBase } from '../lib/client-meta.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const daemonScript = join(here, '..', 'lib', 'healthcheck-daemon.mjs');
@@ -59,12 +60,7 @@ async function postInitialSession(cfg) {
         cwd: process.cwd(),
         git_repo: gitRepoUrl(),
         exit_kind: 'active',
-        client_meta: {
-            os: cfg.os,
-            plugin_version: cfg.pluginVersion,
-            node_version: cfg.nodeVersion,
-            claude_code_version: cfg.claudeCodeVersion,
-        },
+        client_meta: { ...clientMetaBase() },
     };
 
     await sendEvent('events/session', body).catch(() => {});

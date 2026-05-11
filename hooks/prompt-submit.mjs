@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { loadConfig, gitRepoUrl, readEffortLevel } from '../lib/config.mjs';
 import { uuid, resolveSessionId, rememberTurn, recallTurn } from '../lib/ids.mjs';
 import { sendEvent, flushQueue } from '../lib/client.mjs';
+import { clientMetaBase } from '../lib/client-meta.mjs';
 import { computeContextSnapshot, readLatestAssistantUsage } from '../lib/context.mjs';
 import { mutateState, readState } from '../lib/session-state.mjs';
 
@@ -66,12 +67,7 @@ async function maybeFlushInterruptedPriorTurn(cfg, sessionId, transcriptPath) {
         thinking_blocks_count: null,
         parallel_tools_max: null,
         parallel_tools_avg: null,
-        client_meta: {
-            os: cfg.os,
-            plugin_version: cfg.pluginVersion,
-            node_version: cfg.nodeVersion,
-            synthetic: 'interrupt_backfill',
-        },
+        client_meta: { ...clientMetaBase(), synthetic: 'interrupt_backfill' },
     };
 
     await sendEvent('events/execution', body).catch(() => {});
@@ -134,12 +130,7 @@ async function main() {
         context_percent: ctx.contextPercent,
         is_reprompt: isReprompt,
         gap_ms: gapMs,
-        client_meta: {
-            os: cfg.os,
-            plugin_version: cfg.pluginVersion,
-            claude_code_version: cfg.claudeCodeVersion,
-            node_version: cfg.nodeVersion,
-        },
+        client_meta: { ...clientMetaBase() },
     };
 
     await sendEvent('events/prompt', body).catch(() => {});

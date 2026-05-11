@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { loadConfig, gitRepoUrl } from '../lib/config.mjs';
 import { resolveSessionId } from '../lib/ids.mjs';
 import { sendEvent, flushQueue } from '../lib/client.mjs';
+import { clientMetaBase } from '../lib/client-meta.mjs';
 import { summariseTranscript } from '../lib/session-summary.mjs';
 import { readState, clearState } from '../lib/session-state.mjs';
 
@@ -49,12 +50,7 @@ async function main() {
         cwd: process.cwd(),
         git_repo: gitRepoUrl(),
         exit_kind: summary.exitKind || (typeof payload.reason === 'string' ? payload.reason.slice(0, 32) : 'unknown'),
-        client_meta: {
-            os: cfg.os,
-            plugin_version: cfg.pluginVersion,
-            node_version: cfg.nodeVersion,
-            claude_code_version: cfg.claudeCodeVersion,
-        },
+        client_meta: { ...clientMetaBase() },
     };
 
     await sendEvent('events/session', body).catch(() => {});
