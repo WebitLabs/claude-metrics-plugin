@@ -6,6 +6,7 @@ import { sendEvent, flushQueue } from '../lib/client.mjs';
 import { clientMetaBase } from '../lib/client-meta.mjs';
 import { summariseTranscript } from '../lib/session-summary.mjs';
 import { readState, clearState } from '../lib/session-state.mjs';
+import { readSessionName } from '../lib/transcript-meta.mjs';
 
 async function main() {
     const cfg = loadConfig();
@@ -27,6 +28,7 @@ async function main() {
 
     const body = {
         session_id: sessionId,
+        session_name: readSessionName(payload.transcript_path),
         account_email: cfg.accountEmail,
         account_uuid: cfg.accountUuid,
         organization_uuid: cfg.organizationUuid,

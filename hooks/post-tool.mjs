@@ -5,6 +5,7 @@ import { uuid, resolveSessionId, recallTurn } from '../lib/ids.mjs';
 import { sendEvent, flushQueue } from '../lib/client.mjs';
 import { clientMetaBase } from '../lib/client-meta.mjs';
 import { popPending } from '../lib/tool-stack.mjs';
+import { readSessionName } from '../lib/transcript-meta.mjs';
 import {
     classifyBash,
     classifySuccess,
@@ -93,6 +94,7 @@ async function main() {
         account_uuid: cfg.accountUuid,
         organization_uuid: cfg.organizationUuid,
         session_id: sessionId,
+        session_name: readSessionName(payload.transcript_path),
         turn_id: turnId || null,
         tool_name: toolName,
         success,

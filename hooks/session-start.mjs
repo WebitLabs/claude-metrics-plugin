@@ -12,6 +12,7 @@ import { loadConfig, gitRepoUrl } from '../lib/config.mjs';
 import { resolveSessionId } from '../lib/ids.mjs';
 import { sendEvent, flushQueue } from '../lib/client.mjs';
 import { clientMetaBase } from '../lib/client-meta.mjs';
+import { readSessionName } from '../lib/transcript-meta.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const daemonScript = join(here, '..', 'lib', 'healthcheck-daemon.mjs');
@@ -53,6 +54,7 @@ async function postInitialSession(cfg) {
     const sessionId = resolveSessionId(payload.session_id);
     const body = {
         session_id: sessionId,
+        session_name: readSessionName(payload.transcript_path),
         account_email: cfg.accountEmail,
         account_uuid: cfg.accountUuid,
         organization_uuid: cfg.organizationUuid,

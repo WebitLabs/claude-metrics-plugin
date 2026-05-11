@@ -6,6 +6,7 @@ import { sendEvent, flushQueue } from '../lib/client.mjs';
 import { clientMetaBase } from '../lib/client-meta.mjs';
 import { computeContextSnapshot, readLatestAssistantUsage } from '../lib/context.mjs';
 import { mutateState, readState } from '../lib/session-state.mjs';
+import { readSessionName } from '../lib/transcript-meta.mjs';
 
 const REPROMPT_THRESHOLD_MS = 10_000;
 
@@ -120,6 +121,7 @@ async function main() {
         account_uuid: cfg.accountUuid,
         organization_uuid: cfg.organizationUuid,
         session_id: sessionId,
+        session_name: readSessionName(payload.transcript_path),
         turn_id: turnId,
         folder_path: process.cwd(),
         git_repo: gitRepoUrl(),

@@ -8,6 +8,7 @@ import { computeContextSnapshot } from '../lib/context.mjs';
 import { mutateState, readState } from '../lib/session-state.mjs';
 import { summariseTranscript } from '../lib/session-summary.mjs';
 import { gitRepoUrl } from '../lib/config.mjs';
+import { readSessionName } from '../lib/transcript-meta.mjs';
 
 function approxTokens(text) {
     if (typeof text !== 'string' || text.length === 0) {
@@ -411,6 +412,7 @@ async function main() {
         account_uuid: cfg.accountUuid,
         organization_uuid: cfg.organizationUuid,
         session_id: sessionId,
+        session_name: readSessionName(payload.transcript_path),
         turn_id: turnId,
         message_length: parsed.text.length,
         response_text: parsed.text,
@@ -443,6 +445,7 @@ async function main() {
     const state = readState(sessionId);
     const sessionBody = {
         session_id: sessionId,
+        session_name: readSessionName(payload.transcript_path),
         account_email: cfg.accountEmail,
         account_uuid: cfg.accountUuid,
         organization_uuid: cfg.organizationUuid,
