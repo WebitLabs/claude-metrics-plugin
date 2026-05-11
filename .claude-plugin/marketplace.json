@@ -9,7 +9,7 @@
       "name": "claude-metrics",
       "source": "./",
       "description": "Posts UserPromptSubmit + Stop + 10-min health-check events to the Claude Metrics ingest API.",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "category": "metrics"
     }
   ]
