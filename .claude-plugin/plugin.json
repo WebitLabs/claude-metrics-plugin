@@ -1,6 +1,6 @@
 {
   "name": "claude-metrics",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Captures UserPromptSubmit, Stop, and 10-min health-check events from Claude Code and posts them to the Claude Metrics ingest API.",
   "author": {
     "name": "WebitFactory"
